@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  db-service:
+    build: ./db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    ports:
+      - 5432:5432
+  checkout-service:
+    build: ../checkout
+    environment:
+      spring_profiles_active: container
+    ports:
+      - 8081:80
+    depends_on:
+      - db-service
+  bill-service:
+    build: ../bill
+    environment:
+      spring_profiles_active: container
+    expose:
+      - 80
+    depends_on:
+      - db-service
+  logistic-service:
+    build: ../logistic
+    environment:
+      spring_profiles_active: container
+    expose:
+      - 80
+    depends_on:
+      - db-service
+  
